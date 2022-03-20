@@ -1,0 +1,21 @@
+const { verify } = require("../utils/jwt");
+const { jwtSecret } = require("../config/config.default");
+const { db } = require("../utils/db");
+module.exports = async (req, res, next) => {
+  let token = req.headers["authorization"];
+  console.log(token, 'headers')
+  token = token ? token.split("Bearer ")[1] : null;
+  if (!token) {
+    return res.status(401).send("没有权限");
+  }
+  try {
+    const decodedToken = await verify(token, jwtSecret);
+    console.log(decodedToken, "decodedToken");
+    req.user = await db("select * from users where user_id = ?", [
+      decodedToken.userId,
+    ]);
+    next();
+  } catch (err) {
+    return res.status(401).send("没有权限");
+  }
+};
