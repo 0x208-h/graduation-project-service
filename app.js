@@ -13,9 +13,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 
 const PORT = process.env.PORT || 8080;
-app.get("/", (req, res) => {
-  res.send("ddd");
-});
 
 app.use("/api", routers);
 
