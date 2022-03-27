@@ -8,4 +8,6 @@ router.post("/user/login", userCtrl.login);
 
 router.get("/user", auth, userCtrl.getCurrentUser);
 
+router.get("/user/all", auth, userCtrl.allUsersInfo)
+
 module.exports = router;
