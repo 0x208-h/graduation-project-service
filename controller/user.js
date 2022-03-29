@@ -17,20 +17,21 @@ exports.login = async function (req, res, next) {
     // 数据验证
     // 生成token
     const user = req.body;
+    console.log(user, "user");
     const token = await jwt.sign(
       {
-        userId: req.body.user_id,
+        userId: user.username,
       },
       jwtSecret,
       {
-        expiresIn: 60 * 60 * 24,
+        expiresIn: 60 * 60 * 2,
       }
     );
 
     const sql = "select * from users where username = ? and password = ?";
     const sql1 = "select * from users where username = ?";
-    const sqlArr1 = [user.user_id];
-    const sqlArr = [user.user_id, user.password];
+    const sqlArr1 = [user.username];
+    const sqlArr = [user.username, user.password];
     const ret = await db(sql, sqlArr);
     const ret1 = await db(sql1, sqlArr1);
     console.log(ret);
@@ -110,4 +111,8 @@ exports.allUsersInfo = async function (req, res, next) {
     },
   };
   res.status(200).json(value);
+};
+
+exports.addUserInfo = async function (req, res, next) {
+  res.status(200).send("success");
 };

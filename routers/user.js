@@ -10,4 +10,6 @@ router.get("/user", auth, userCtrl.getCurrentUser);
 
 router.get("/user/all", auth, userCtrl.allUsersInfo)
 
+router.post('/user/add', auth, userCtrl.addUserInfo);
+
 module.exports = router;
