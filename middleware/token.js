@@ -10,9 +10,7 @@ module.exports = async (req, res, next) => {
     return res.status(401).send("没有权限");
   }
   try {
-    console.log(111);
     const decodedToken = await verify(token, jwtSecret);
-    console.log(222)
     console.log(decodedToken, "decodedToken");
     req.user = await db("select * from users where username = ?", [
       decodedToken.userId,

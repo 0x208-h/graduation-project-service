@@ -114,5 +114,25 @@ exports.allUsersInfo = async function (req, res, next) {
 };
 
 exports.addUserInfo = async function (req, res, next) {
-  res.status(200).send("success");
+  let sql1 = "select count(user_id) as total from users";
+  const ret = await db(sql1);
+  console.log(ret, 'ret')
+  const data = {
+    ...req.body,
+    user_id: parseInt(ret[0].total) + 1,
+  };
+  let sql2 = "INSERT INTO users SET ?";
+  const result = await db(sql2, data);
+  console.log(result);
+  const value = {
+    data: {},
+  };
+  if(result) {
+    value.data.status = 200;
+    value.data.statusText = '添加用户成功'
+    return res.status(200).json(value)
+  } else {
+    value.data.statusText = '添加用户失败'
+    return res.status(500).json(value)
+  }
 };
