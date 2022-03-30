@@ -116,7 +116,7 @@ exports.allUsersInfo = async function (req, res, next) {
 exports.addUserInfo = async function (req, res, next) {
   let sql1 = "select count(user_id) as total from users";
   const ret = await db(sql1);
-  console.log(ret, 'ret')
+  console.log(ret, "ret");
   const data = {
     ...req.body,
     user_id: parseInt(ret[0].total) + 1,
@@ -127,12 +127,28 @@ exports.addUserInfo = async function (req, res, next) {
   const value = {
     data: {},
   };
-  if(result) {
+  if (result) {
     value.data.status = 200;
-    value.data.statusText = '添加用户成功'
-    return res.status(200).json(value)
+    value.data.statusText = "添加用户成功";
+    return res.status(200).json(value);
   } else {
-    value.data.statusText = '添加用户失败'
-    return res.status(500).json(value)
+    value.data.statusText = "添加用户失败";
+    return res.status(500).json(value);
+  }
+};
+
+exports.deleteUserInfo = async function (req, res, next) {
+  console.log(req.params.id, "id");
+  const sql = "delete from users where user_id = ?";
+  const ret = await db(sql, req.params.id);
+  console.log(ret);
+  const value = { data: {} };
+  if (ret) {
+    value.data.status = 200;
+    value.data.statusText = "删除用户成功";
+    return res.status(200).json(value);
+  } else {
+    value.data.statusText = "添加用户失败";
+    return res.status(500).json(value);
   }
 };

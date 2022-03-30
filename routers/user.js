@@ -12,4 +12,6 @@ router.get("/user/all", auth, userCtrl.allUsersInfo)
 
 router.post('/user/add', auth, userCtrl.addUserInfo);
 
+router.delete('/user/:id', auth, userCtrl.deleteUserInfo);
+
 module.exports = router;
