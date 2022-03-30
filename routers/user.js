@@ -8,10 +8,12 @@ router.post("/user/login", userCtrl.login);
 
 router.get("/user", auth, userCtrl.getCurrentUser);
 
-router.get("/user/all", auth, userCtrl.allUsersInfo)
+router.get("/user/all", auth, userCtrl.allUsersInfo);
 
-router.post('/user/add', auth, userCtrl.addUserInfo);
+router.post("/user/add", auth, userCtrl.addUserInfo);
 
-router.delete('/user/:id', auth, userCtrl.deleteUserInfo);
+router.delete("/user/:id", auth, userCtrl.deleteUserInfo);
+
+router.get("/user/:id", auth, userCtrl.getCurrentUser);
 
 module.exports = router;
