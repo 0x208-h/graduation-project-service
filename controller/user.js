@@ -77,78 +77,89 @@ exports.getCurrentUser = async function (req, res, next) {
 };
 
 exports.allUsersInfo = async function (req, res, next) {
-  const username = req.query.username;
-  const pageNum = req.query.pageNum;
-  const pageSize = req.query.pageSize;
-  let sql1 = "select count(user_id) as total from users";
-  let sqlArr = [];
-  let sql3 = "select * from users";
-  let sqlArr3 = [];
-  if (username) {
-    sql1 += " where username like ?";
-    sql3 += " where username like ?";
-    sqlArr.push(`%${username}%`);
-    sqlArr3.push(`%${username}%`);
-  }
-  if (pageNum || pageSize) {
-    sql3 += " limit ?, ?";
-    sqlArr3.push(
-      (parseInt(pageNum) - 1) * parseInt(pageSize),
-      parseInt(pageSize)
-    );
-  }
-  const ret = await db(sql1, sqlArr);
-  const result = await db(sql3, sqlArr3);
-  const value = {
-    data: {
-      status: 200,
-      pageInfo: {
-        total: ret[0].total,
-        pageNum: parseInt(pageNum),
-        pageSize: parseInt(pageSize),
-        list: result,
+  try {
+    const username = req.query.username;
+    const pageNum = req.query.pageNum;
+    const pageSize = req.query.pageSize;
+    let sql1 = "select count(user_id) as total from users";
+    let sqlArr = [];
+    let sql3 = "select * from users";
+    let sqlArr3 = [];
+    if (username) {
+      sql1 += " where username like ?";
+      sql3 += " where username like ?";
+      sqlArr.push(`%${username}%`);
+      sqlArr3.push(`%${username}%`);
+    }
+    if (pageNum || pageSize) {
+      sql3 += " limit ?, ?";
+      sqlArr3.push(
+        (parseInt(pageNum) - 1) * parseInt(pageSize),
+        parseInt(pageSize)
+      );
+    }
+    const ret = await db(sql1, sqlArr);
+    const result = await db(sql3, sqlArr3);
+    const value = {
+      data: {
+        status: 200,
+        pageInfo: {
+          total: ret[0].total,
+          pageNum: parseInt(pageNum),
+          pageSize: parseInt(pageSize),
+          list: result,
+        },
       },
-    },
-  };
-  res.status(200).json(value);
+    };
+    res.status(200).json(value);
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.addUserInfo = async function (req, res, next) {
-  let sql1 = "select count(user_id) as total from users";
-  const ret = await db(sql1);
-  console.log(ret, "ret");
-  const data = {
-    ...req.body,
-    user_id: parseInt(ret[0].total) + 1,
-  };
-  let sql2 = "INSERT INTO users SET ?";
-  const result = await db(sql2, data);
-  console.log(result);
-  const value = {
-    data: {},
-  };
-  if (result) {
-    value.data.status = 200;
-    value.data.statusText = "添加用户成功";
-    return res.status(200).json(value);
-  } else {
-    value.data.statusText = "添加用户失败";
-    return res.status(500).json(value);
+  try {
+    let sql1 = "select count(user_id) as total from users";
+    const ret = await db(sql1);
+    console.log(ret, "ret");
+    const data = {
+      ...req.body,
+      user_id: parseInt(ret[0].total) + 1,
+    };
+    let sql2 = "INSERT INTO users SET ?";
+    const result = await db(sql2, data);
+    console.log(result);
+    const value = {
+      data: {},
+    };
+    if (result) {
+      value.data.status = 200;
+      value.data.statusText = "添加用户成功";
+      return res.status(200).json(value);
+    } else {
+      value.data.statusText = "添加用户失败";
+      return res.status(500).json(value);
+    }
+  } catch (err) {
+    next(err);
   }
 };
 
 exports.deleteUserInfo = async function (req, res, next) {
-  console.log(req.params.id, "id");
-  const sql = "delete from users where user_id = ?";
-  const ret = await db(sql, req.params.id);
-  console.log(ret);
-  const value = { data: {} };
-  if (ret) {
-    value.data.status = 200;
-    value.data.statusText = "删除用户成功";
-    return res.status(200).json(value);
-  } else {
-    value.data.statusText = "添加用户失败";
-    return res.status(500).json(value);
+  try {
+    const sql = "delete from users where user_id = ?";
+    const ret = await db(sql, req.params.id);
+    console.log(ret);
+    const value = { data: {} };
+    if (ret) {
+      value.data.status = 200;
+      value.data.statusText = "删除用户成功";
+      return res.status(200).json(value);
+    } else {
+      value.data.statusText = "添加用户失败";
+      return res.status(500).json(value);
+    }
+  } catch (err) {
+    next(err);
   }
 };
