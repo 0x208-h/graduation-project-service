@@ -1,3 +1,4 @@
+const uuid = require("uuid");
 const { db } = require("../utils/db");
 const jwt = require("../utils/jwt");
 const { jwtSecret } = require("../config/config.default");
@@ -127,12 +128,12 @@ exports.allUsersInfo = async function (req, res, next) {
 
 exports.addUserInfo = async function (req, res, next) {
   try {
-    let sql1 = "select count(user_id) as total from users";
-    const ret = await db(sql1);
-    console.log(ret, "ret");
+    // let sql1 = "select count(user_id) as total from users";
+    // const ret = await db(sql1);
+    // console.log(ret, "ret");
     const data = {
       ...req.body,
-      user_id: parseInt(ret[0].total) + 1,
+      user_id: uuid.v4(),
     };
     let sql2 = "INSERT INTO users SET ?";
     const result = await db(sql2, data);
