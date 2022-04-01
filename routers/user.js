@@ -16,4 +16,6 @@ router.delete("/user/:id", auth, userCtrl.deleteUserInfo);
 
 router.get("/user/:id", auth, userCtrl.getCurrentUser);
 
+router.put("/user/:id", auth, userCtrl.updateUserInfo)
+
 module.exports = router;

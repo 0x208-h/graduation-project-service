@@ -68,9 +68,17 @@ exports.login = async function (req, res, next) {
 
 exports.getCurrentUser = async function (req, res, next) {
   try {
-    // console.log(req.headers, 'headers')
-    // res.send("get user");
-    res.status(200).json({ user: req.user });
+    const sql = "select * from users where user_id = ?";
+    const ret = await db(sql, req.params.id);
+    const value = { data: {} };
+    if (ret) {
+      value.data.status = 200;
+      value.data.detail = ret[0];
+      return res.status(200).json(value);
+    } else {
+      return res.status(500).json(value);
+    }
+    // res.status(200).json({ user: req.user });
   } catch (err) {
     next(err);
   }
@@ -128,7 +136,6 @@ exports.addUserInfo = async function (req, res, next) {
     };
     let sql2 = "INSERT INTO users SET ?";
     const result = await db(sql2, data);
-    console.log(result);
     const value = {
       data: {},
     };
@@ -149,7 +156,6 @@ exports.deleteUserInfo = async function (req, res, next) {
   try {
     const sql = "delete from users where user_id = ?";
     const ret = await db(sql, req.params.id);
-    console.log(ret);
     const value = { data: {} };
     if (ret) {
       value.data.status = 200;
@@ -157,6 +163,34 @@ exports.deleteUserInfo = async function (req, res, next) {
       return res.status(200).json(value);
     } else {
       value.data.statusText = "添加用户失败";
+      return res.status(500).json(value);
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.updateUserInfo = async function (req, res, next) {
+  try {
+    let sql =
+      "update users set username = ?, sex = ?, password = ?, phone = ?, email = ?, create_time = ? where user_id = ?";
+    let sqlArr = [
+      req.body.username,
+      req.body.sex,
+      req.body.password,
+      req.body.phone,
+      req.body.email,
+      req.body.create_time,
+      req.params.id,
+    ];
+    const result = await db(sql, sqlArr);
+    const value = { data: {} };
+    if (result) {
+      value.data.status = 200;
+      value.data.statusText = "更改用户信息成功";
+      return res.status(200).json(value);
+    } else {
+      value.data.statusText = "更新用户信息失败";
       return res.status(500).json(value);
     }
   } catch (err) {

@@ -5,9 +5,10 @@ module.exports = async (req, res, next) => {
   let token = req.headers["authorization"];
   console.log(token, "headers");
   token = token ? token.split("Bearer ")[1] : null;
-  console.log(token)
+  console.log(token);
   if (!token) {
-    return res.status(401).send("没有权限");
+    console.log(1111)
+    return res.status(401).send({ status: 401, message: "没有权限" });
   }
   try {
     const decodedToken = await verify(token, jwtSecret);
@@ -17,6 +18,7 @@ module.exports = async (req, res, next) => {
     ]);
     next();
   } catch (err) {
-    return res.status(401).send("没有权限");
+    console.log(2222)
+    return res.status(401).send({ status: 401, message: "没有权限" });
   }
 };
