@@ -77,6 +77,7 @@ exports.getCurrentUser = async function (req, res, next) {
       value.data.detail = ret[0];
       return res.status(200).json(value);
     } else {
+      value.data.detail = {};
       return res.status(500).json(value);
     }
     // res.status(200).json({ user: req.user });
