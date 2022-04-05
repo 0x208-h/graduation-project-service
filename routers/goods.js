@@ -6,6 +6,8 @@ const auth = require("../middleware/token");
 
 router.get("/all", auth, goodCtrl.getAllGoodsInfo);
 
+router.put('/updateStatus', auth, goodCtrl.updateStatus)
+
 router.delete('/:id', auth, goodCtrl.deleteGoodsInfo);
 
 module.exports = router;

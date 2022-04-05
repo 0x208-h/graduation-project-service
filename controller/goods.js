@@ -59,3 +59,22 @@ exports.deleteGoodsInfo = async function (req, res, next) {
     next(err);
   }
 };
+
+exports.updateStatus = async function (req, res, next) {
+  try {
+    const status = req.body.status ? 0 : 1;
+    const sql = "update goods set is_putaway = ? where goods_id = ?";
+    const ret = await db(sql, [status, req.body.id]);
+    const value = { data: {} };
+    if (ret) {
+      value.data.status = 200;
+      value.data.statusText = "修改商品状态成功";
+      return res.status(200).json(value);
+    } else {
+      value.data.statusText = "修改商品状态失败";
+      return res.status(500).json(value);
+    }
+  } catch (err) {
+    next(err);
+  }
+};
