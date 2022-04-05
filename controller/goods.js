@@ -41,3 +41,21 @@ exports.getAllGoodsInfo = async function (req, res, next) {
     next(err);
   }
 };
+
+exports.deleteGoodsInfo = async function (req, res, next) {
+  try {
+    const sql = "delete from goods where goods_id = ?";
+    const ret = await db(sql, req.params.id);
+    const value = { data: {} };
+    if (ret) {
+      value.data.status = 200;
+      value.data.statusText = "删除商品信息成功";
+      return res.status(200).json(value);
+    } else {
+      value.data.statusText = "添加商品信息失败";
+      return res.status(500).json(value);
+    }
+  } catch (err) {
+    next(err);
+  }
+};
