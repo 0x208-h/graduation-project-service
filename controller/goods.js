@@ -63,8 +63,8 @@ exports.deleteGoodsInfo = async function (req, res, next) {
 exports.updateStatus = async function (req, res, next) {
   try {
     const status = req.body.status ? 0 : 1;
-    const sql = "update goods set is_putaway = ? where goods_id = ?";
-    const ret = await db(sql, [status, req.body.id]);
+    const sql = "update goods set is_putaway = ?, create_time = ? where goods_id = ?";
+    const ret = await db(sql, [status, req.body.create_time, req.body.id]);
     const value = { data: {} };
     if (ret) {
       value.data.status = 200;
