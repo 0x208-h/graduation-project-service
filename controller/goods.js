@@ -97,3 +97,48 @@ exports.getGoodsInfo = async function (req, res, next) {
     next(err);
   }
 };
+
+// exports.getLevel = async function (req, res, next) {
+//   try {
+//     console.log(1111)
+//     const sql = "select code, value from goods_classify";
+//     const ret = await db(sql);
+//     const value = { data: {} };
+//     console.log(ret, "ret");
+//     console.log(value)
+//     if (ret) {
+//       value.data.status = 200;
+//       value.data.list = ret[0];
+//       return res.status(200).json(value);
+//     } else {
+//       value.data.list = [];
+//       return res.status(500).json(value);
+//     }
+//   } catch (err) {
+//     next(err);
+//   }
+// };
+
+exports.AddGoodsInfo = async function (req, res, next) {
+  try {
+    const data = {
+      ...req.body,
+      goods_id: uuid.v4(),
+    };
+    let sql = "INSERT INTO goods SET ?";
+    const result = await db(sql, data);
+    const value = {
+      data: {},
+    };
+    if (result) {
+      value.data.status = 200;
+      value.data.statusText = "添加用户成功";
+      return res.status(200).json(value);
+    } else {
+      value.data.statusText = "添加用户失败";
+      return res.status(500).json(value);
+    }
+  } catch (err) {
+    next(err);
+  }
+};

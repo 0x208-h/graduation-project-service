@@ -12,4 +12,8 @@ router.get('/:id', auth, goodCtrl.getGoodsInfo)
 
 router.delete("/:id", auth, goodCtrl.deleteGoodsInfo);
 
+// router.get('/level', auth, goodCtrl.getLevel)
+
+router.post('/add', auth, goodCtrl.AddGoodsInfo)
+
 module.exports = router;
