@@ -49,10 +49,11 @@ exports.deleteGoodsInfo = async function (req, res, next) {
     const value = { data: {} };
     if (ret) {
       value.data.status = 200;
-      value.data.detail = ret[0];
+      value.data.statusText = "删除当前商品成功";
       return res.status(200).json(value);
     } else {
-      value.data.detail = {};
+      value.data.status = 200;
+      value.data.statusText = "删除当前商品成功";
       return res.status(500).json(value);
     }
   } catch (err) {
@@ -132,10 +133,40 @@ exports.AddGoodsInfo = async function (req, res, next) {
     };
     if (result) {
       value.data.status = 200;
-      value.data.statusText = "添加用户成功";
+      value.data.statusText = "添加商品信息成功";
       return res.status(200).json(value);
     } else {
-      value.data.statusText = "添加用户失败";
+      value.data.statusText = "添加商品信息失败";
+      return res.status(500).json(value);
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.UpdateGoodsInfo = async function (req, res, next) {
+  try {
+    let sql =
+      "update goods set goods_name = ?, goods_desc = ?, goods_first_classify = ?, price = ?, inventory = ?, is_putaway = ?, goods_detail= ?, create_time = ? where goods_id = ?";
+    let sqlArr = [
+      req.body.goods_name,
+      req.body.goods_desc,
+      req.body.goods_first_classify,
+      req.body.price,
+      req.body.inventory,
+      req.body.is_putaway,
+      req.body.goods_detail,
+      req.body.create_time,
+      req.params.id,
+    ];
+    const result = await db(sql, sqlArr);
+    const value = { data: {} };
+    if (result) {
+      value.data.status = 200;
+      value.data.statusText = "更改商品信息成功";
+      return res.status(200).json(value);
+    } else {
+      value.data.statusText = "更新商品信息失败";
       return res.status(500).json(value);
     }
   } catch (err) {

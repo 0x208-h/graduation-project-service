@@ -16,4 +16,6 @@ router.delete("/:id", auth, goodCtrl.deleteGoodsInfo);
 
 router.post('/add', auth, goodCtrl.AddGoodsInfo)
 
+router.put('/update/:id', auth, goodCtrl.UpdateGoodsInfo)
+
 module.exports = router;
