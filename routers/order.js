@@ -6,5 +6,6 @@ const auth = require("../middleware/token");
 
 router.get('/all', auth, orderCtrl.getAllOrder);
 
+router.get("/:id", auth, orderCtrl.getCurrentOrder)
 
 module.exports = router;
