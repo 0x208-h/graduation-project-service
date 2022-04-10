@@ -8,4 +8,6 @@ router.use("/goods", require("./goods"));
 
 router.use("/orders", require("./order"));
 
+router.use("/home", require("./home"));
+
 module.exports = router;
