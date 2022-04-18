@@ -60,7 +60,9 @@ exports.login = async function (req, res, next) {
     } else {
       return res
         .status(200)
-        .send({ status: 200, statusText: "fail", message: "用户名不存在" });
+        .send({
+          data: { status: 200, statusText: "fail", message: "用户名不存在" },
+        });
     }
   } catch (err) {
     next(err);
