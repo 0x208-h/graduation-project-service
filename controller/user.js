@@ -43,7 +43,7 @@ exports.login = async function (req, res, next) {
           data: {
             status: 200,
             statusText: "success",
-            ...user,
+            ...ret[0],
             token,
             message: "登录成功",
           },
@@ -53,16 +53,14 @@ exports.login = async function (req, res, next) {
           data: {
             status: 200,
             statusText: "fail",
-            message: "用户名或者密码错误",
+            message: "密码错误",
           },
         });
       }
     } else {
-      return res
-        .status(200)
-        .send({
-          data: { status: 200, statusText: "fail", message: "用户名不存在" },
-        });
+      return res.status(200).send({
+        data: { status: 200, statusText: "fail", message: "用户名不存在" },
+      });
     }
   } catch (err) {
     next(err);
@@ -131,25 +129,32 @@ exports.allUsersInfo = async function (req, res, next) {
 
 exports.addUserInfo = async function (req, res, next) {
   try {
-    // let sql1 = "select count(user_id) as total from users";
-    // const ret = await db(sql1);
-    // console.log(ret, "ret");
-    const data = {
-      ...req.body,
-      user_id: uuid.v4(),
-    };
-    let sql2 = "INSERT INTO users SET ?";
-    const result = await db(sql2, data);
-    const value = {
-      data: {},
-    };
-    if (result) {
-      value.data.status = 200;
-      value.data.statusText = "添加用户成功";
-      return res.status(200).json(value);
+    let sql = "select * from users where username = ?";
+    let sqlArr = [req.body.username];
+    const ret = await db(sql, sqlArr);
+    const value1 = { data: {} };
+    if (ret.length > 0) {
+      value1.data.status = 201;
+      value1.data.statusText = "用户名已存在";
+      return res.status(200).json(value1);
     } else {
-      value.data.statusText = "添加用户失败";
-      return res.status(500).json(value);
+      const data = {
+        ...req.body,
+        user_id: uuid.v4(),
+      };
+      let sql2 = "INSERT INTO users SET ?";
+      const result = await db(sql2, data);
+      const value = {
+        data: {},
+      };
+      if (result) {
+        value.data.status = 200;
+        value.data.statusText = "添加用户成功";
+        return res.status(200).json(value);
+      } else {
+        value.data.statusText = "添加用户失败";
+        return res.status(500).json(value);
+      }
     }
   } catch (err) {
     next(err);
@@ -195,6 +200,28 @@ exports.updateUserInfo = async function (req, res, next) {
       return res.status(200).json(value);
     } else {
       value.data.statusText = "更新用户信息失败";
+      return res.status(500).json(value);
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getUserPermissions = async function (req, res, next) {
+  console.log(req.body, req.params);
+  try {
+    let sql = "update users set is_permission = ? where user_id = ?";
+    let permission = req.body.permission === 0 ? 1 : 0;
+    let sqlArr = [permission, req.params.id];
+    const result = await db(sql, sqlArr);
+    console.log(result, "result");
+    const value = { data: {} };
+    if (result) {
+      value.data.status = 200;
+      value.data.statusText = "更改用户权限成功";
+      return res.status(200).json(value);
+    } else {
+      value.data.statusText = "更新用户权限失败";
       return res.status(500).json(value);
     }
   } catch (err) {

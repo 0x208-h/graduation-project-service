@@ -122,22 +122,32 @@ exports.getGoodsInfo = async function (req, res, next) {
 
 exports.AddGoodsInfo = async function (req, res, next) {
   try {
-    const data = {
-      ...req.body,
-      goods_id: uuid.v4(),
-    };
-    let sql = "INSERT INTO goods SET ?";
-    const result = await db(sql, data);
-    const value = {
-      data: {},
-    };
-    if (result) {
-      value.data.status = 200;
-      value.data.statusText = "添加商品信息成功";
-      return res.status(200).json(value);
+    let sql1 = "select * from goods where goods_name = ?";
+    let sqlArr = req.body.goods_name;
+    const ret = await db(sql1, sqlArr);
+    if (ret.length > 0) {
+      const value = { data: {} };
+      value.data.status = 201;
+      value.data.statusText = "商品名称已存在";
+      res.status(200).json(value);
     } else {
-      value.data.statusText = "添加商品信息失败";
-      return res.status(500).json(value);
+      const data = {
+        ...req.body,
+        goods_id: uuid.v4(),
+      };
+      let sql = "INSERT INTO goods SET ?";
+      const result = await db(sql, data);
+      const value = {
+        data: {},
+      };
+      if (result) {
+        value.data.status = 200;
+        value.data.statusText = "添加商品信息成功";
+        return res.status(200).json(value);
+      } else {
+        value.data.statusText = "添加商品信息失败";
+        return res.status(500).json(value);
+      }
     }
   } catch (err) {
     next(err);
