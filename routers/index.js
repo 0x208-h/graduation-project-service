@@ -10,4 +10,6 @@ router.use("/orders", require("./order"));
 
 router.use("/home", require("./home"));
 
+router.use("/provider", require("./provider"));
+
 module.exports = router;
